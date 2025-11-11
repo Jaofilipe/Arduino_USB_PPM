@@ -1,6 +1,4 @@
 # Arduino_USB_PPM
-<<<<<<< HEAD
-
 Convert a USB joystick input into a PPM signal for an RC transmitter using an Arduino + USB Host Shield.
 
 This repository contains:
@@ -72,25 +70,9 @@ References
   - https://github.com/aemarkov/PPMControl/blob/master/AudioPPM/StandartProfiles.cs
 - TX axis operation modes:
   - https://www.rcgroups.com/forums/showthread.php?1122256-whats-difference-between-mode-1-and-mode-2
+- ATmega328 Microcontroller Datasheet:
+  - https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf
 
 License
 - This project is distributed under the terms of the GNU General Public License v3. See [LICENSE](LICENSE).
-=======
-## Convert USB joystick inouts into a PPM signal for an RC Transmitter
 
-# Project was based on the following for information:
-## USB HOST to PPM OUTPUT:
-* https://github.com/DroneMesh/USB_PPM
-* https://github.com/drorgl/USBJoystickPPM
-* https://github.com/lexfp/le3dpToPPM
-
-## PPM INPUT:
-* https://github.com/joshbuker/mcu-ppm-input
-
-## FLYSKY FSI6X PPM TIMINGS:
-* https://github.com/aemarkov/PPMControl/blob/master/AudioPPM/StandartProfiles.cs
-
-## TX AXIS OPERATION MODES:
-* https://www.rcgroups.com/forums/showthread.php?1122256-whats-difference-between-mode-1-and-mode-2
-![Operation modes of a RC Transmitter](https://www.rcgroups.com/forums/showatt.php?attachmentid=714749)
->>>>>>> c9eb4ea... Update README
