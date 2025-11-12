@@ -8,72 +8,12 @@
  * on https://code.google.com/p/generate-ppm-signal/ 
  */
 
-//#include <PS3USB.h>
-#include <SPI.h>
+#include "PPM_TxConfig.h"
 
-/*
- *  Select your control mode by uncommenting the corresponding line
- */
-
-//#define MODE_1 //RETA
-//#define MODE_2 //RTEA
-#define MODE_3 //AETR
-//#define MODE_4 //ATER
-
-// Define axis channel mapping based on selected mode
-#if defined(MODE_1)
-  #define YAW_AXIS 0
-  #define PITCH_AXIS 1
-  #define THROTTLE_AXIS 2
-  #define ROLL_AXIS 3
-#ekif defined(MODE_2)
-  #define YAW_AXIS 0
-  #define THROTTLE_AXIS 1
-  #define PITCH_AXIS 2
-  #define ROLL_AXIS 3
-#elif defined(MODE_3)
-  #define ROLL_AXIS 0
-  #define PITCH_AXIS 1
-  #define THROTTLE_AXIS 2
-  #define YAW_AXIS 3
-#elif defined(MODE_4)
-  #define ROLL_AXIS 0
-  #define THROTTLE_AXIS 1   
-  #define PITCH_AXIS 2
-  #define YAW_AXIS 3
-#else
-    #error "Define Transmitter Axis Mapping"
-#endif
-
-/*
- *   Select your transmitter PPM settings by uncommenting the corresponding line
- */
-
-#define FLYSKY_I6X                            //uncomment this line if you use Flysky i6x transmitter
-//#define DEFAULT_PPM_TX                        //uncomment this line to use generic TX default ppm values
-
-#if defined(FLYSKY_I6X)
-#define CHANNEL_NUMBER 10                     //set the number of chanels
-#define CHANNEL_DEFAULT_VALUE 1500            //set the default servo value
-#define THROTTLE_DEFAULT_VALUE 1000           //set the default throttle value
-#define PPM_FRAME_LEN 20000                   //set the PPM frame length in microseconds (1ms = 1000µs)
-#define PPM_PULSE_LEN 400                     //set the ppm separation pulse length
-#define PPM_PULSE_POLARITY 0                  //set polarity of the ppm pulses: 1 is positive, 0 is negative
-#elif defined(DEFAULT_PPM_TX)
-#define CHANNEL_NUMBER 8                     //set the number of chanels
-#define CHANNEL_DEFAULT_VALUE 1500            //set the default servo value
-#define THROTTLE_DEFAULT_VALUE 1000           //set the default throttle value
-#define PPM_FRAME_LEN 22500                   //set the PPM frame length in microseconds (1ms = 1000µs)
-#define PPM_PULSE_LEN 300                     //set the ppm separation pulse length
-#define PPM_PULSE_POLARITY 1                  //set polarity of the ppm pulses: 1 is positive, 0 is negative
-#else
-    #error "Define Transmitter Type"
-#endif
+#define TEST_PPM_SEQ   //define this to run a test ppm sequence in the main loop
 
 #define PPM_PIN 3                             //set PPM signal output pin on the arduino
 #define SWITCH_PIN 16
-
-//USB Usb;
 
 /*
  * this array holds the servo values for the ppm signal
@@ -89,12 +29,7 @@ void setup() {
   while (!Serial);                                  // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
 #endif
 
-  if (Usb.Init() == -1) {
-    Serial.print(F("\r\nOSC did not start \n"));
-    while (1); //halt
-  }
-
-  Serial.print(F("\r\n USB Library Started \n"));
+  Serial.print(F("\r\n Serial Started \n"));
   
                                           //initiallize default ppm values
   for(int i=0; i<CHANNEL_NUMBER; i++){
@@ -124,13 +59,17 @@ void setup() {
 
 void loop() {
 
-  //Usb.Task();
+#if defined(TEST_PPM_SEQ)                    //test ppm signal generation by changing the first channel value between 1000 and 2000
+
   static int val = 1;
   
   ppm[0] = ppm[0] + val;
   if(ppm[0] >= 2000){ val = -1; }
   if(ppm[0] <= 1000){ val = 1; }
   delay(10);
+
+#endif
+
 }
 
 
