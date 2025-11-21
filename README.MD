@@ -24,19 +24,19 @@ Requirements:
 - USB Host Shield library: https://github.com/felis/USB_Host_Shield_2.0
 
 Basic Wiring:
-- PPM output: Connect the PPM signal to the pin defined as PPM_PIN in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h).
+- PPM output: Connect the PPM signal to the pin defined as `PPM_PIN` in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h).
 - USB HOST: Configure the USB HOST 2.0 jumper traces according to the desired voltages and Pin availability referring to the [USB Host 2.0 Hardware Manual](https://chome.nerpa.tech/usb-host-shield-hardware-manual/). 
 
 Configuration (in [PPM_TxConfig.h](TEST_PPM_Arduino/PPM_TxConfig.h))
-- TX Axis mapping modes: define one of the modes at top of the sketch (`MODE_1`, `MODE_2`, `MODE_3`, `MODE_4`) — this controls how transmitter axes map to joystick axes. The current default is "MODE_3".
+- TX Axis mapping modes: define one of the modes at top of the sketch (`MODE_1`, `MODE_2`, `MODE_3`, `MODE_4`) — this controls how transmitter axes map to joystick axes. The current default is `MODE_3`.
 ![Operation modes of a RC Transmitter](https://www.rcgroups.com/forums/showatt.php?attachmentid=714749)
 - PPM parameters are set according to the selected PPM Configuration. The current default is [`FLYSKY_I6X`](TEST_PPM_Arduino/PPM_TxConfig.h):
-  - [`CHANNEL_NUMBER`](TEST_PPM_Arduino/PPM_TxConfig.h) — number of channels
-  - [`CHANNEL_DEFAULT_VALUE`](TEST_PPM_Arduino/PPM_TxConfig.h) — default servo mid value (µs)
-  - [`THROTTLE_DEFAULT_VALUE`](TEST_PPM_Arduino/PPM_TxConfig.h) — default throttle (µs)
-  - [`PPM_FRAME_LEN`](TEST_PPM_Arduino/PPM_TxConfig.h) — frame length (µs)
-  - [`PPM_PULSE_LEN`](TEST_PPM_Arduino/PPM_TxConfig.h) — separation pulse length (µs)
-  - [`PPM_PULSE_POLARITY`](TEST_PPM_Arduino/PPM_TxConfig.h) — pulse polarity (0 = low pulse, 1 = high pulse)
+  - `CHANNEL_NUMBER` — number of channels
+  - `CHANNEL_DEFAULT_VALUE` — default servo mid value (µs)
+  - `THROTTLE_DEFAULT_VALUE` — default throttle (µs)
+  - `PPM_FRAME_LEN` — frame length (µs)
+  - `PPM_PULSE_LEN` — separation pulse length (µs)
+  - `PPM_PULSE_POLARITY` — pulse polarity (0 = low pulse, 1 = high pulse)
 
 Notes about code
 - The sketch uses Timer1 and an interrupt routine (`ISR(TIMER1_COMPA_vect)` in [USB_PPM_Arduino.ino](TEST_PPM_Arduino/PPM_TxConfig.cpp)) to generate precise PPM timing.
@@ -49,9 +49,13 @@ Build & upload
 4. Select board and port, then Upload.
 
 Usage
-- After upload, plug the USB joystick into the Host Shield.
-- The sketch will read joystick axes (if USB code enabled) and map them to PPM channel timings; otherwise it runs a demo oscillation on channel 0.
-- Use transmitter/receiver to verify channel outputs.
+- Select the desired `*.ino` file:
+    - [PPM Generation test example](TEST_PPM_Arduino/TEST_PPM_Arduino.ino)
+    - [USB Host read Joystick test example](TEST_USB_Arduino/TEST_USB_Arduino.ino)
+    - [Code to generate PPM signals based on Joystick](Arduino_USB_PPM.ino)
+- Compile and upload the code.
+- Check on serial port everython is working correctly.
+- Use transmitter/receiver to verify PPM channel outputs.
 
 Troubleshooting
 - If PPM output is not present, confirm:
