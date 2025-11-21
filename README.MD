@@ -27,7 +27,7 @@ This repository contains:
 >- PPM output: Connect the PPM signal to the pin defined as `PPM_PIN` in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h).
 >- USB HOST: Configure the USB HOST 2.0 jumper traces according to the desired voltages and Pin availability referring to the [USB Host 2.0 Hardware Manual](https://chome.nerpa.tech/usb-host-shield-hardware-manual/).
 
-> [!IMPORTATNT]
+> [!IMPORTANT]
 > Before Assembling the Circuit & Uploading  
 > Please verify the pins used for PPM and USB HOST 2.0 Board before uploading!
 > Timer1 direct output pins are [`Pin 9`] and [`Pin 10`]
@@ -51,7 +51,9 @@ Configuration (in [PPM_TxConfig.h](TEST_PPM_Arduino/PPM_TxConfig.h)):
 - TX Axis mapping modes: define one of the modes at top of the sketch (`MODE_1`, `MODE_2`, `MODE_3`, `MODE_4`) — this controls how transmitter axes map to joystick axes. The current default is `MODE_3`.
 
 [Operation modes of a RC Transmitter](https://www.rcgroups.com/forums/showatt.php?attachmentid=714749)
-<img src="/Media/stickmodes.jpg" alt="Alt Text" width="300" height="200">
+
+<img src="/Media/stickmodes.jpg" alt="Alt Text" width="300">
+
 Image from RcGroups
 
 
