@@ -16,18 +16,19 @@ This repository contains:
 - Example to test Joystick HID data reading
 
 ## Quick start
+>[!NOTE]
+>Requirements:
+>- Arduino (Uno / ATmega328P tested)
+>- USB Host Shield (see USB Host Shield 2.0) 
+>- USB joystick/gamepad
+>- USB Host Shield library: https://github.com/felis/USB_Host_Shield_2.0
+>
+>Wiring:
+>- PPM output: Connect the PPM signal to the pin defined as `PPM_PIN` in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h).
+>- USB HOST: Configure the USB HOST 2.0 jumper traces according to the desired voltages and Pin availability referring to the [USB Host 2.0 Hardware Manual](https://chome.nerpa.tech/usb-host-shield-hardware-manual/).
 
-Requirements:
-- Arduino (Uno / ATmega328P tested)
-- USB Host Shield (see USB Host Shield 2.0) 
-- USB joystick/gamepad
-- USB Host Shield library: https://github.com/felis/USB_Host_Shield_2.0
-
-Wiring:
-- PPM output: Connect the PPM signal to the pin defined as `PPM_PIN` in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h).
-- USB HOST: Configure the USB HOST 2.0 jumper traces according to the desired voltages and Pin availability referring to the [USB Host 2.0 Hardware Manual](https://chome.nerpa.tech/usb-host-shield-hardware-manual/).
-
-> [! Before Assembling the Circuit & Uploading]  
+> [!IMPORTATNT]
+> Before Assembling the Circuit & Uploading  
 > Please verify the pins used for PPM and USB HOST 2.0 Board before uploading!
 > Timer1 direct output pins are [`Pin 9`] and [`Pin 10`]
 > These pins are used by the USB HOST 2.0 [`SS`] ([`Pin 10`]) and [`INT`] ([`Pin 9`])
