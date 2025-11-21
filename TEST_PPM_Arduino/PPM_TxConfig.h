@@ -1,6 +1,7 @@
 #ifndef _PPM_TX_CONFIG_H_  // only include this file once 
 #define _PPM_TX_CONFIG_H_
 
+#include"Arduino.h"
 /*
  *  Select your control mode by uncommenting the corresponding line
  */
@@ -86,7 +87,7 @@
   #error "PPM_PIN is not defined in PPM_TxConfig.h"
 #endif 
 
-extern int ppm[CHANNEL_NUMBER];
+extern uint16_t ppm[CHANNEL_NUMBER];
 extern void setup_PPM(void);
 
 #endif // _PPM_TX_CONFIG_H_

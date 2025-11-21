@@ -22,10 +22,33 @@ void THRUSTMASTER_FCS::ParseHIDData(USBHID *hid, bool is_rpt_id, uint8_t len, ui
 #endif
         memcpy(&TmJoyData, buf, min(len, MFK_CASTUINT8T sizeof(TmJoyData)));
 
-        static TMButtonsData oldButtonState;
+        for (uint8_t i = 0; i < sizeof(TMAxisData); i++){
+                if ((TmJoyData.Axis.RZaxis != oldAxisState.RZaxis ) || (TmJoyData.Axis.Slider != oldAxisState.Slider ) || (TmJoyData.Axis.Xaxis != oldAxisState.Xaxis ) || (TmJoyData.Axis.Yaxis != oldAxisState.Yaxis ) ) {
+                        OnGamePadChanged(&TmJoyData.Axis);
+                        break;
+                }
+        }
 
-        if (TmJoyData.Buttons.all_buttons != oldButtonState.all_buttons) { // Check if anything has changed
-                buttonClickState.all_buttons = TmJoyData.Buttons.all_buttons & ~oldButtonState.all_buttons; // Update click state variable
+        if (TmJoyData.Dpad.dpad_data != oldDpadState.dpad_data ) {
+                OnHatSwitch(TmJoyData.Dpad.dpad_data);
+                oldDpadState.dpad_data = TmJoyData.Dpad.dpad_data;
+        }
+
+        buttonClickState.all_buttons = (TmJoyData.Buttons.all_buttons ^ oldButtonState.all_buttons);
+
+        // Calling Button Event Handler for every button changed
+        if (buttonClickState.all_buttons) {
+                for (uint8_t i = 0; i < 0x10; i++) {
+                        uint16_t mask = (0x0001 << i);
+
+                        if ((mask & buttonClickState.all_buttons) > 0) {
+                                if ((TmJoyData.Buttons.all_buttons & mask) > 0){
+                                        OnButtonDn(i + 1);
+                                }else {
+                                        OnButtonUp(i + 1);
+                                }
+                        }
+                }
                 oldButtonState.all_buttons = TmJoyData.Buttons.all_buttons;
         }
 }

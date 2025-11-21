@@ -1,9 +1,8 @@
-#include "TEST_PPM_Arduino/PPM_TxConfig.h"
-#include "TEST_USB_Arduino/THRUSTMASTER_FCS.h"
-#include <SPI.h>
+#include "ARDUINO_USB_PPM.h"
 
 USB Usb;
-THRUSTMASTER_FCS thrust_joy(&Usb);
+
+ThrustMasterPPM thrust_joy( ppm, &Usb);
 
 void setup() {
 
@@ -29,63 +28,7 @@ void loop() {
 
   Usb.Task();
 
-  if (thrust_joy.connected()) {
-      if (thrust_joy.TmJoyData.Xaxis) {
-      Serial.print("X Axis: ");
-      Serial.println(thrust_joy.TmJoyData.Xaxis, HEX);
-    }
-          if (thrust_joy.TmJoyData.Yaxis) {
-      Serial.print("Y Axis: ");
-      Serial.println(thrust_joy.TmJoyData.Yaxis, HEX);
-    }
-          if (thrust_joy.TmJoyData.RZaxis) {
-      Serial.print("RZ Axis: ");
-      Serial.println(thrust_joy.TmJoyData.RZaxis, HEX);
-    }
-              if (thrust_joy.TmJoyData.Slider) {
-      Serial.print("Slider: ");
-      Serial.println(thrust_joy.TmJoyData.Slider, HEX);
-    }
-    /*
-    if (thrust_joy.buttonClickState.speedLimiter) {
-      thrust_joy.buttonClickState.speedLimiter = 0; // Clear event
-      Serial.println(F("Speed Limiter"));
-    }
-    */
-
-    switch (thrust_joy.TmJoyData.Buttons.dpad) {
-      case DPAD_UP:
-        Serial.println(F("Up"));
-        break;
-      case DPAD_UP_RIGHT:
-        Serial.println(F("UP & right"));
-        break;
-      case DPAD_RIGHT:
-        Serial.println(F("Right"));
-        break;
-      case DPAD_RIGHT_DOWN:
-        Serial.println(F("Right & down"));
-        break;
-      case DPAD_DOWN:
-        Serial.println(F("Down"));
-        break;
-      case DPAD_DOWN_LEFT:
-        Serial.println(F("Down & left"));
-        break;
-      case DPAD_LEFT:
-        Serial.println(F("Left"));
-        break;
-      case DPAD_LEFT_UP:
-        Serial.println(F("Left & up"));
-        break;
-      case DPAD_OFF:
-        break;
-      default:
-        Serial.print(F("Unknown state: "));
-        Serial.println(thrust_joy.TmJoyData.Buttons.dpad, HEX);
-        break;
-    }
-  } else {
+  if (!thrust_joy.connected()) {
     Serial.println("No Connection to Joystick");  //Joystick not connected, wait for connection
     delay(100);
   }

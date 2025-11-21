@@ -11,7 +11,7 @@
  * this array holds the servo values for the ppm signal
  * change theese values in your code (usually servo values move between 1000 and 2000)
  */
-int ppm[CHANNEL_NUMBER];
+uint16_t ppm[CHANNEL_NUMBER] = {1000};
 
 void setup_PPM(void) {
               

@@ -9,15 +9,34 @@
 #define THRUSTMASTER_FCS_PID 0xB10A
 
 enum DPADEnum {
-        DPAD_UP = 0x0,
-        DPAD_UP_RIGHT = 0x1,
-        DPAD_RIGHT = 0x2,
+        DPAD_UP         = 0x0,
+        DPAD_UP_RIGHT   = 0x1,
+        DPAD_RIGHT      = 0x2,
         DPAD_RIGHT_DOWN = 0x3,
-        DPAD_DOWN = 0x4,
-        DPAD_DOWN_LEFT = 0x5,
-        DPAD_LEFT = 0x6,
-        DPAD_LEFT_UP = 0x7,
-        DPAD_OFF = 0xF,
+        DPAD_DOWN       = 0x4,
+        DPAD_DOWN_LEFT  = 0x5,
+        DPAD_LEFT       = 0x6,
+        DPAD_LEFT_UP    = 0x7,
+        DPAD_OFF        = 0xF,
+};
+
+enum ButtonsEnum{
+        TRIGGER             = 0x00,
+        THUMB_BOTTOM        = 0x01,
+        THUMB_LEFT          = 0x02,
+        THUMB_RIGHT         = 0x03,
+        LEFT_FRONT_ONE      = 0x04,
+        LEFT_BACK_ONE       = 0x05,
+        LEFT_FRONT_TWO      = 0x06,
+        LEFT_BACK_TWO       = 0x07,
+        LEFT_FRONT_THREE    = 0x08,
+        LEFT_BACK_THREE     = 0x09,
+        RIGHT_FRONT_ONE     = 0x0A,
+        RIGHT_BACK_ONE      = 0x0B,
+        RIGHT_FRONT_TWO     = 0x0C,
+        RIGHT_BACK_TWO      = 0x0D,
+        RIGHT_FRONT_THREE   = 0x0E,
+        RIGHT_BACK_THREE    = 0x0F,
 };
 
 union TMButtonsData {
@@ -40,19 +59,26 @@ union TMButtonsData {
                 uint8_t right_back_two : 1;
                 uint8_t right_front_three : 1;
                 uint8_t right_back_three : 1;
-
-                uint8_t dpad : 4;
                 
         } __attribute__((packed));
-        uint32_t all_buttons : 20;
+        uint32_t all_buttons : 16;
 } __attribute__((packed));
 
-struct TMJoyData {
-        union TMButtonsData Buttons;
+union TMDpadData {
+        uint8_t dpad_data : 4;
+} __attribute__((packed));
+
+struct TMAxisData {
         uint16_t Xaxis : 16;  // 0–0x3FFF Range [0:1023] i.e. 14 bits
         uint16_t Yaxis : 16;  // 0–0x3FFF Range [0:1023] i.e. 14 bits
         uint8_t  RZaxis : 8;             // 0-0x00FF Range [0:254]  8 bits
         uint8_t  Slider : 8;         // 0-0x00FF Range [0:254]  8 bits
+} __attribute__((packed));
+
+struct TMJoyData {
+        TMButtonsData Buttons;
+        TMDpadData Dpad;
+        TMAxisData Axis;
 } __attribute__((packed));
 
 class THRUSTMASTER_FCS : public HIDUniversal {
@@ -61,8 +87,25 @@ public:
         THRUSTMASTER_FCS(USB *p) : HIDUniversal(p) {};
 
         bool connected();
-        TMJoyData TmJoyData;
-        TMButtonsData buttonClickState;
+        TMJoyData TmJoyData;              //register to store current joystick values
+        TMButtonsData buttonClickState;  //flag register to store "button state changed" flags 
+
+        TMButtonsData oldButtonState;
+        TMDpadData oldDpadState;
+        TMAxisData oldAxisState;
+
+        virtual void OnGamePadChanged(const TMAxisData *axis __attribute__((unused))) {
+                return;
+        };
+        virtual void OnHatSwitch(uint8_t hat __attribute__((unused))) {
+                return;
+        };
+        virtual void OnButtonUp(uint8_t but_id __attribute__((unused))) {
+                return;
+        };
+        virtual void OnButtonDn(uint8_t but_id __attribute__((unused))) {
+                return;
+        };
 
 private:
         void ParseHIDData(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf); // Called by the HIDUniversal library
