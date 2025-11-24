@@ -52,12 +52,13 @@ This repository contains:
   - `PPM_PULSE_POLARITY` — pulse polarity (0 = low pulse, 1 = high pulse)
 - TX Axis mapping modes: define one of the modes at top of the sketch (`MODE_1`, `MODE_2`, `MODE_3`, `MODE_4`) — this controls how transmitter axes map to joystick axes.  
 >[!IMPORTANT]
-> Plan accordingly to the Tx mode you want to poerate in, the current default is stated in [PPM_TxConfig.h](TEST_PPM_Arduino/PPM_TxConfig.h)
+> Plan accordingly to the Tx mode you want to operate in, the current default is stated in [PPM_TxConfig.h](TEST_PPM_Arduino/PPM_TxConfig.h)
 
 ## [Operation modes of a RC Transmitter](https://www.rcgroups.com/forums/showatt.php?attachmentid=714749)  
 
 <p align="center">
 <img src="/Media/stickmodes.jpg" alt="Alt Text" width="300">    
+<br>
 Image from RcGroups
 </p>
   
