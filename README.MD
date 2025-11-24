@@ -9,7 +9,7 @@ This repository contains:
 - [LICENSE](LICENSE) — GNU GPL v3
 - [.gitignore](.gitignore)
 
-## Features
+# Features
 - Generates multi-channel PPM signal for FLYSKY I6X and common transmitters (basic default PPM provided).
 - Configurable PPM channel count, frame length and pulse settings via header file (see [TEST_PPM_Arduino/PPM_TxConfig.h](TEST_PPM_Arduino/PPM_TxConfig.h))
 - Example to test PPM Generation (with demo mode that moves a channel)
@@ -23,7 +23,7 @@ This repository contains:
 >- USB joystick/gamepad  
 >- USB Host Shield library: https://github.com/felis/USB_Host_Shield_2.0  
 >  
->Wiring:  
+## Wiring:  
 >- PPM output: Connect the PPM signal to the pin defined as `PPM_PIN` in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h).  
 >- USB HOST: Configure the USB HOST 2.0 jumper traces according to the desired voltages and Pin availability referring to the [USB Host 2.0 Hardware Manual](https://chome.nerpa.tech/usb-host-shield-hardware-manual/).  
 
@@ -40,7 +40,7 @@ This repository contains:
 >     - Variable to be changed in in [`UsbCore.h`] file of [`USB HOST SHIELD 2.0 Repo`](https://github.com/felis/USB_Host_Shield_2.0/blob/master/UsbCore.h)  
 
 
-**Configuration (in [PPM_TxConfig.h](TEST_PPM_Arduino/PPM_TxConfig.h)):**
+## Configuration (in [PPM_TxConfig.h](TEST_PPM_Arduino/PPM_TxConfig.h)):
 - PPM parameters are set according to the selected PPM Configuration. The current default is [`FLYSKY_I6X`](TEST_PPM_Arduino/PPM_TxConfig.h):
   - `CHANNEL_NUMBER` — number of channels
   - `CHANNEL_DEFAULT_VALUE` — default servo mid value (µs)
@@ -55,17 +55,17 @@ This repository contains:
 Image from RcGroups  
 
 
-**Notes about code**
+## Notes about code
 - The sketch uses Timer1 and an interrupt routine (`ISR(TIMER1_COMPA/B_vect)` in [USB_PPM_Arduino.ino](TEST_PPM_Arduino/PPM_TxConfig.cpp)) to generate precise PPM timing.
 - USB handling is prepared via the USB Host Shield library; (see https://github.com/felis/USB_Host_Shield_2.0)
 
-**Build & upload**
+## Build & upload
 1. Install PlatformIO (Arduino IDE requires changing the location of the header files to the root folder).
 2. Install the USB Host Shield 2.0 library.
 3. Open "USB_PPM_Arduino.ino".
 4. Select board and port, then Upload.
 
-**Usage**
+## Usage
 - Select the desired `*.ino` file:
     - [PPM Generation test example](TEST_PPM_Arduino/TEST_PPM_Arduino.ino)
     - [USB Host read Joystick test example](TEST_USB_Arduino/TEST_USB_Arduino.ino)
@@ -74,7 +74,7 @@ Image from RcGroups
 Open Serial Monitor to view initialization and diagnostic messages.
 - Connect PPM output to your transmitter/receiver input or to an oscilloscope to verify waveforms.
 
-**Troubleshooting**
+## Troubleshooting
 - No PPM output:
   - Verify the PPM pin matches [`PPM_PIN`](TEST_PPM_Arduino/PPM_TxConfig.h.ino), check wiring and is not used by other hardware.
   - Timer1 is not used by other libraries.
@@ -83,7 +83,7 @@ Open Serial Monitor to view initialization and diagnostic messages.
   -Re-check constants in [`TEST_PPM_Arduino/PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h.ino),  E.g. `PPM_FRAME_LEN`, `PPM_PULSE_LEN`, etc.
   - Use an oscilloscope or logic analyzer to validate pulse widths and frame timing.
 
-**References**
+# References
 - PPM Generation:
   - https://code.google.com/p/generate-ppm-signal/ 
 - USB Host to PPM examples used as base:
@@ -104,6 +104,6 @@ Open Serial Monitor to view initialization and diagnostic messages.
   - https://chome.nerpa.tech/usb-host-shield-hardware-manual/
   - https://chome.nerpa.tech/mcu/using-logitech-extreme-3d-pro-joystick-with-arduino-hid-library/
   
-**License**
+# License
 - This project is distributed under the terms of the GNU General Public License v3. See [LICENSE](LICENSE).
 
