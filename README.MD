@@ -16,14 +16,16 @@ This repository contains:
 - Example to test Joystick HID data reading
 
 ## Quick start
+
 >[!NOTE]
 >**Requirements:**  
 >- Arduino (Uno / ATmega328P tested)  
 >- USB Host Shield (see USB Host Shield 2.0)   
 >- USB joystick/gamepad  
 >- USB Host Shield library: https://github.com/felis/USB_Host_Shield_2.0  
->  
+
 ## Wiring:  
+>[!NOTE]
 >- PPM output: Connect the PPM signal to the pin defined as `PPM_PIN` in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h).  
 >- USB HOST: Configure the USB HOST 2.0 jumper traces according to the desired voltages and Pin availability referring to the [USB Host 2.0 Hardware Manual](https://chome.nerpa.tech/usb-host-shield-hardware-manual/).  
 
@@ -48,11 +50,17 @@ This repository contains:
   - `PPM_FRAME_LEN` — frame length (µs)
   - `PPM_PULSE_LEN` — separation pulse length (µs)
   - `PPM_PULSE_POLARITY` — pulse polarity (0 = low pulse, 1 = high pulse)
-- TX Axis mapping modes: define one of the modes at top of the sketch (`MODE_1`, `MODE_2`, `MODE_3`, `MODE_4`) — this controls how transmitter axes map to joystick axes. The current default is `MODE_3`.
+- TX Axis mapping modes: define one of the modes at top of the sketch (`MODE_1`, `MODE_2`, `MODE_3`, `MODE_4`) — this controls how transmitter axes map to joystick axes.  
+>[!IMPORTANT]
+> Plan accordingly to the Tx mode you want to poerate in, the current default is stated in [PPM_TxConfig.h](TEST_PPM_Arduino/PPM_TxConfig.h)
 
-[Operation modes of a RC Transmitter](https://www.rcgroups.com/forums/showatt.php?attachmentid=714749)  
-<img src="/Media/stickmodes.jpg" alt="Alt Text" width="300">  
-Image from RcGroups  
+## [Operation modes of a RC Transmitter](https://www.rcgroups.com/forums/showatt.php?attachmentid=714749)  
+
+<p align="center">
+<img src="/Media/stickmodes.jpg" alt="Alt Text" width="300">    
+Image from RcGroups
+</p>
+  
 
 
 ## Notes about code
