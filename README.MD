@@ -42,7 +42,7 @@ This repository contains:
 >     - Variable to be changed in in [`UsbCore.h`] file of [`USB HOST SHIELD 2.0 Repo`](https://github.com/felis/USB_Host_Shield_2.0/blob/master/UsbCore.h)  
 
 
-## Configuration (in [PPM_TxConfig.h](TEST_PPM_Arduino/PPM_TxConfig.h)):
+## Configuration in [PPM_TxConfig.h](TEST_PPM_Arduino/PPM_TxConfig.h):
 - PPM parameters are set according to the selected PPM Configuration. The current default is [`FLYSKY_I6X`](TEST_PPM_Arduino/PPM_TxConfig.h):
   - `CHANNEL_NUMBER` — number of channels
   - `CHANNEL_DEFAULT_VALUE` — default servo mid value (µs)
@@ -62,11 +62,22 @@ This repository contains:
 Image from RcGroups
 </p>
   
-
-
-## Notes about code
+### Notes about code
 - The sketch uses Timer1 and an interrupt routine (`ISR(TIMER1_COMPA/B_vect)` in [USB_PPM_Arduino.ino](TEST_PPM_Arduino/PPM_TxConfig.cpp)) to generate precise PPM timing.
 - USB handling is prepared via the USB Host Shield library; (see https://github.com/felis/USB_Host_Shield_2.0)
+
+## Configuration in [THRUSTMASTER_FCS.h](TEST_USB_Arduino/THRUSTMASTER_FCS.h):
+- The `THRUSTMASTER_FCS` class is declared in this header file to handle gathering the joystick data.
+- This header file contains the Vendor ID and Product ID of the joystick as well as the mappings for the Axis and Buttons
+- Four basic function calls are provided for higher level processing, feel free to add more:
+   - `OnGamePadChanged` Called to handle the information of the joystick axis and throttle slider;  
+   - `OnHatSwitch` Called for handling the directional "hat" or dpad on top of the joystick;
+   - `OnButtonUp` Called for handling button key releases;
+   - `OnButtonDn` Called for handling button key presses;
+
+### Notes about code
+ - The data from the joystick is parsed in using the `ParseHIDData` function in [THRUSTMASTER_FCS.cpp](TEST_USB_Arduino/THRUSTMASTER_FCS.cpp), different joysticks may require different parsing.
+ - Please consult the information on [Usb Host Development Blog](https://chome.nerpa.tech/mcu/using-logitech-extreme-3d-pro-joystick-with-arduino-hid-library/)
 
 ## Build & upload
 1. Install PlatformIO (Arduino IDE requires changing the location of the header files to the root folder).

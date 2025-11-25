@@ -207,96 +207,96 @@ void ThrustMasterPPM::OnButtonUp(uint8_t but_id){
 void ThrustMasterPPM::OnButtonDn(uint8_t but_id){
    
 #if defined(USM_PPM_DEBUG)
-    Serial.print(F("Button Up id: "));
+    Serial.print(F("Button Down id: "));
     Serial.println(but_id, HEX);
 #endif
 
     switch (but_id) {
         case TRIGGER:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: TRIGGER"));
+            Serial.println(F("Button Down: TRIGGER"));
 #endif
             break;
         case THUMB_BOTTOM:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: THUMB_BOTTOM"));
+            Serial.println(F("Button Down: THUMB_BOTTOM"));
 #endif
             break;
         case THUMB_LEFT:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: THUMB_LEFT"));
+            Serial.println(F("Button Down: THUMB_LEFT"));
 #endif
             break;
         case THUMB_RIGHT:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: THUMB_RIGHT"));
+            Serial.println(F("Button Down: THUMB_RIGHT"));
 #endif
             break;
         case LEFT_FRONT_ONE:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: LEFT_FRONT_ONE"));
+            Serial.println(F("Button Down: LEFT_FRONT_ONE"));
 #endif
                 throttle_safety = false;
             break;
         case LEFT_BACK_ONE:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: LEFT_BACK_ONE"));
+            Serial.println(F("Button Down: LEFT_BACK_ONE"));
 #endif
                 throttle_safety = true;
             break;
         case LEFT_FRONT_TWO:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: LEFT_FRONT_TWO"));
+            Serial.println(F("Button Down: LEFT_FRONT_TWO"));
 #endif
             break;
         case LEFT_BACK_TWO:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: LEFT_BACK_TWO"));
+            Serial.println(F("Button Down: LEFT_BACK_TWO"));
 #endif
             break;
         case LEFT_FRONT_THREE:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: LEFT_FRONT_THREE"));
+            Serial.println(F("Button Down: LEFT_FRONT_THREE"));
 #endif
             break;
         case LEFT_BACK_THREE:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: LEFT_BACK_THREE"));
+            Serial.println(F("Button Down: LEFT_BACK_THREE"));
 #endif
             break;
         case RIGHT_FRONT_ONE:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: RIGHT_FRONT_ONE"));
+            Serial.println(F("Button Down: RIGHT_FRONT_ONE"));
 #endif
             break;
         case RIGHT_BACK_ONE:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: RIGHT_BACK_ONE"));
+            Serial.println(F("Button Down: RIGHT_BACK_ONE"));
 #endif
             break;
         case RIGHT_FRONT_TWO:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: RIGHT_FRONT_TWO"));
+            Serial.println(F("Button Down: RIGHT_FRONT_TWO"));
 #endif
             break;
         case RIGHT_BACK_TWO:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: RIGHT_BACK_TWO"));
+            Serial.println(F("Button Down: RIGHT_BACK_TWO"));
 #endif
             break;
         case RIGHT_FRONT_THREE:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: RIGHT_FRONT_THREE"));
+            Serial.println(F("Button Down: RIGHT_FRONT_THREE"));
 #endif
             break;
         case RIGHT_BACK_THREE:
 #if defined(USM_PPM_DEBUG)
-            Serial.println(F("Button Up: RIGHT_BACK_THREE"));
+            Serial.println(F("Button Down: RIGHT_BACK_THREE"));
 #endif
             break;
         default:
 #if defined(USM_PPM_DEBUG)
-            Serial.print(F("Unknown Button Up: "));
+            Serial.print(F("Unknown Button Down: "));
             Serial.println(but_id, HEX);
 #endif
             break;
