@@ -34,21 +34,21 @@ void loop() {
   Usb.Task();
 
   if (thrust_joy.connected()) {
-      if (thrust_joy.TmJoyData.Xaxis) {
+      if (thrust_joy.TmJoyData.Axis.Xaxis) {
       Serial.print("X Axis: ");
-      Serial.println(thrust_joy.TmJoyData.Xaxis, HEX);
+      Serial.println(thrust_joy.TmJoyData.Axis.Xaxis, HEX);
     }
-          if (thrust_joy.TmJoyData.Yaxis) {
+          if (thrust_joy.TmJoyData.Axis.Yaxis) {
       Serial.print("Y Axis: ");
-      Serial.println(thrust_joy.TmJoyData.Yaxis, HEX);
+      Serial.println(thrust_joy.TmJoyData.Axis.Yaxis, HEX);
     }
-          if (thrust_joy.TmJoyData.RZaxis) {
+          if (thrust_joy.TmJoyData.Axis.RZaxis) {
       Serial.print("RZ Axis: ");
-      Serial.println(thrust_joy.TmJoyData.RZaxis, HEX);
+      Serial.println(thrust_joy.TmJoyData.Axis.RZaxis, HEX);
     }
-              if (thrust_joy.TmJoyData.Slider) {
+              if (thrust_joy.TmJoyData.Axis.Slider) {
       Serial.print("Slider: ");
-      Serial.println(thrust_joy.TmJoyData.Slider, HEX);
+      Serial.println(thrust_joy.TmJoyData.Axis.Slider, HEX);
     }
     /*
     if (thrust_joy.buttonClickState.speedLimiter) {
@@ -57,7 +57,7 @@ void loop() {
     }
     */
 
-    switch (thrust_joy.TmJoyData.Buttons.dpad) {
+    switch (thrust_joy.TmJoyData.Dpad.dpad_data) {
       case DPAD_UP:
         Serial.println(F("Up"));
         break;
@@ -86,7 +86,7 @@ void loop() {
         break;
       default:
         Serial.print(F("Unknown state: "));
-        Serial.println(thrust_joy.TmJoyData.Buttons.dpad, HEX);
+        Serial.println(thrust_joy.TmJoyData.Dpad.dpad_data, HEX);
         break;
     }
   } else {

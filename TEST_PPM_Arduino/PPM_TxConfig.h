@@ -69,7 +69,7 @@
  * 10 - uses Timer1 OC1B output pin
  * other - needs to be handled manually in the code
  */
- #define PPM_PIN 10 
+ #define PPM_PIN (7)
 
 #if defined(PPM_PIN)            //check which Pin was defined for PPM output
   #if (PPM_PIN == 9)            // Pin 9 works best with Timer1 OC1A
@@ -77,7 +77,7 @@
   #elif (PPM_PIN == 10)         // Pin 10 works best with Timer1 OC1B
     #define PPM_OC1B_USED
   #else
-    #if (PPM_PIN <= 13) && (PPM_PIN <= 0) // other digital pins need to be handled manually
+    #if ((PPM_PIN <= (13)) && (PPM_PIN >= (0))) // other digital pins need to be handled manually
       #define PPM_MANUAL_USED 
     #else
       #error "PPM_PIN value is not valid. Choose 9, 10 or a digital pin between 0 and 13."
@@ -88,6 +88,7 @@
 #endif 
 
 extern uint16_t ppm[CHANNEL_NUMBER];
+extern uint16_t ppm_offset[CHANNEL_NUMBER];
 extern void setup_PPM(void);
 
 #endif // _PPM_TX_CONFIG_H_
