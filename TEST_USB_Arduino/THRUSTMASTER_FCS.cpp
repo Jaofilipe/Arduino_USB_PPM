@@ -22,6 +22,8 @@ void THRUSTMASTER_FCS::ParseHIDData(USBHID *hid, bool is_rpt_id, uint8_t len, ui
 #endif
         memcpy(&TmJoyData, buf, min(len, MFK_CASTUINT8T sizeof(TmJoyData)));
 
+        TmJoyData.Axis.Slider = ~TmJoyData.Axis.Slider;  //invert slider axis to 255 on top, original is 0 on top
+
         for (uint8_t i = 0; i < sizeof(TMAxisData); i++){
                 if ((TmJoyData.Axis.RZaxis != oldAxisState.RZaxis ) || (TmJoyData.Axis.Slider != oldAxisState.Slider ) || (TmJoyData.Axis.Xaxis != oldAxisState.Xaxis ) || (TmJoyData.Axis.Yaxis != oldAxisState.Yaxis ) ) {
                         OnGamePadChanged(&TmJoyData.Axis);
@@ -43,9 +45,9 @@ void THRUSTMASTER_FCS::ParseHIDData(USBHID *hid, bool is_rpt_id, uint8_t len, ui
 
                         if ((mask & buttonClickState.all_buttons) > 0) {
                                 if ((TmJoyData.Buttons.all_buttons & mask) > 0){
-                                        OnButtonDn(i + 1);
+                                        OnButtonDn(i);
                                 }else {
-                                        OnButtonUp(i + 1);
+                                        OnButtonUp(i);
                                 }
                         }
                 }

@@ -5,27 +5,30 @@
 
 #include "PPM_TxConfig.h"
 #include <Arduino.h>
-//#include <avr/io.h>
+#include <avr/io.h>
 
 /*
  * this array holds the servo values for the ppm signal
  * change theese values in your code (usually servo values move between 1000 and 2000)
  */
-uint16_t ppm[CHANNEL_NUMBER] = {1000};
+uint16_t ppm[CHANNEL_NUMBER];
 
 void setup_PPM(void) {
-              
-  for(int i=0; i<CHANNEL_NUMBER; i++){    //initiallize default ppm values
+            
+  for(int i = 0; i < CHANNEL_NUMBER; i++){    //initiallize default ppm values
     if ( i == THROTTLE_AXIS) {            //set default throttle value
       ppm[i] = THROTTLE_DEFAULT_VALUE;
     } else {
-      ppm[i]= CHANNEL_DEFAULT_VALUE;      //set default channel value
+      ppm[i] = CHANNEL_DEFAULT_VALUE;      //set default channel value
     }
   }
 
   cli();                          // stop interrupts
   TCCR1A = 0;                     // set TCCR1A register to 0
   TCCR1B = 0;                     // set TCCR1B register to 0 
+  
+  TCCR1B |= (1 << WGM12);         // turn on CTC mode
+  TCCR1B |= (1 << CS11);          // clk/8 prescaler: 0,5 microseconds at 16mhz
   
 #if defined(PPM_OC1A_USED)          // if using OC1A pin ( pin 9 ) for PPM output 
 
@@ -40,11 +43,12 @@ void setup_PPM(void) {
     #endif
   
   TCCR1A |= (1 << COM1A0);           // set COM1A0 so that OC1A is Toggled on compare match (for PPM_PIN 9)
+  TIMSK1 |= (1 << OCIE1A);        // enable timer 1 interrupt on Output Compare A match
 
 #elif defined(PPM_OC1B_USED)         // if using OC1B pin ( pin 10 ) for PPM output
 
     OCR1B = 100;                        // Timer 1 compare match register initial value
-                                     // On reset or startup OC1A register is always reset to “0”
+                                     // On reset or startup OC1B register is always reset to “0”
     #if (PPM_PULSE_POLARITY == 0)        // initialize the OC1B pin state according to PPM_PULSE_POLARITY
     TCCR1A |= (1 << COM1B1);          // set COM1B1 to enable "set" or "reset" on compare match       
     TCCR1A |= (1 << COM1B0);          // set COM1B0 so that OC1B is Set on compare match (set output to high level)
@@ -54,20 +58,17 @@ void setup_PPM(void) {
     #endif
 
   TCCR1A |= (1 << COM1B0);           // set COM1B0 so that OC1B is Toggled on compare match (for PPM_PIN 10)
-
+  TIMSK1 |= (1 << OCIE1B);        // enable timer 1 interrupt on Output Compare B match
 #endif
-
-  TCCR1B |= (1 << WGM12);         // turn on CTC mode
-  TCCR1B |= (1 << CS11);          // clk/8 prescaler: 0,5 microseconds at 16mhz
-  TIMSK1 |= (1 << OCIE1A);        // enable timer 1 interrupt on Output Compare A match 
-  sei();                          // re-enable interrupts  
-
+ 
   pinMode(PPM_PIN, OUTPUT);       // IMPORTANT: When Using OC1A or OC1B outputs port definition MUST come last
 
 #if defined(PPM_MANUAL_USED)                       // for pins other than 9 and 10  which need manual control
   digitalWrite(PPM_PIN, !PPM_PULSE_POLARITY);      // initialize the PPM output pin to idle state
 #endif
-  
+
+  sei();                          // re-enable interrupts  
+
 }
 
 /*
