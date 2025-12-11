@@ -12,7 +12,7 @@
 .vscode
 .pio/*
 .pio
-lib/*
+lib/*/*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
