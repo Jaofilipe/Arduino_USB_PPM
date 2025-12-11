@@ -23,9 +23,12 @@ This repository contains:
 >**Requirements:**  
 >- Arduino (Uno / Nano / ATmega328P tested)  
 >- USB Host Shield (see USB Host Shield 2.0)   
->- USB joystick/gamepad  
->- USB Host Shield library: https://github.com/felis/USB_Host_Shield_2.0
->- Liquid Display LCD 20x4 with I2C backpack (Can be deemed optional)  
+>- USB joystick/gamepad  (ThrustMaster FCS 16000 was used)   
+>- USB Host Shield library: https://github.com/felis/USB_Host_Shield_2.0  (Download and extract zip into lib folder)
+>- Liquid Display LCD 20x4 with I2C backpack (Can be deemed optional)
+>- LCD I2C Library: https://github.com/johnrickman/LiquidCrystal_I2C  (Download and extract zip into lib folder)
+>-
+>- Note: Remove the examples folder for both libraries to avoid platformio errors
 
 ## Wiring:
 
