@@ -22,10 +22,18 @@ class ThrustMasterPPM : public THRUSTMASTER_FCS {
                 void OnButtonUp(uint8_t but_id);
                 void OnButtonDn(uint8_t but_id);
 
-                virtual void handleHatUp(void);
-                virtual void handleHatDown(void);
-                virtual void handleHatLeft(void);
-                virtual void handleHatRight(void);
+                virtual void handleHatUp(void __attribute__((unused))){
+                        return;        
+                };
+                virtual void handleHatDown(void __attribute__((unused))){
+                        return;        
+                };
+                virtual void handleHatLeft(void __attribute__((unused))){
+                        return;        
+                };
+                virtual void handleHatRight(void __attribute__((unused))){
+                        return;        
+                };
 
 };
 
