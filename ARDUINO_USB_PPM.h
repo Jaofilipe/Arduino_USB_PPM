@@ -7,8 +7,8 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-//#define USM_PPM_DEBUG_BUTTONS
-//#define USM_PPM_DEBUG_AXIS
+#define USM_PPM_DEBUG_BUTTONS
+#define USM_PPM_DEBUG_AXIS
 
 class ThrustMasterPPM : public THRUSTMASTER_FCS {
         public:

@@ -69,7 +69,7 @@
  * 10 - uses Timer1 OC1B output pin
  * other - needs to be handled manually in the code
  */
- #define PPM_PIN (7)
+ #define PPM_PIN (2)
 
 #if defined(PPM_PIN)            //check which Pin was defined for PPM output
   #if (PPM_PIN == 9)            // Pin 9 works best with Timer1 OC1A
