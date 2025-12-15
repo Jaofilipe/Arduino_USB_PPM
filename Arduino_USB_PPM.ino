@@ -8,6 +8,8 @@ LiquidCrystal_I2C MyLCD(0x27, 20, 4);
 
 ThrustMasterPPM_Display TMaster_Joy( ppm, &Usb, &MyLCD);
 
+bool conn_status = true;    //flag to clear lcd on first usb disconnection
+
 void setup() {
 
   MyLCD.init();
@@ -59,12 +61,13 @@ if (Usb.Init() == -1) {
   attachInterrupt(digitalPinToInterrupt(3), handleDown, LOW);
   attachInterrupt(digitalPinToInterrupt(4), handleOk, LOW);
   attachInterrupt(digitalPinToInterrupt(5), handleBack, LOW); */
-    
+  
+  conn_status = true;    //flag to clear lcd on first usb disconnection
 }
 
 void loop() {
 
-  bool conn_status = true;    //flag to clear lcd on first usb disconnection
+
 label_loop_begin:           //label marker for jump to always retry connecting to usb
   
   Usb.Task();
