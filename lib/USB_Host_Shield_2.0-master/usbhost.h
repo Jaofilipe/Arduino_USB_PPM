@@ -106,7 +106,7 @@ typedef SPi< MAKE_PIN(PIN_SPI_SCK), MAKE_PIN(PIN_SPI_MOSI), MAKE_PIN(PIN_SPI_MIS
 #undef MAKE_PIN
 #elif defined(__AVR_ATmega1280__) || (__AVR_ATmega2560__) || defined(__AVR_ATmega32U4__) || defined(__AVR_AT90USB646__) || defined(__AVR_AT90USB1286__)
 typedef SPi< Pb1, Pb2, Pb3, Pb0 > spi;
-#elif  defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328PB__)
+#elif  defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
 typedef SPi< Pb5, Pb3, Pb4, Pb2 > spi;
 #elif defined(__AVR_ATmega644__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega1284__) || defined(__AVR_ATmega1284P__)
 typedef SPi< Pb7, Pb5, Pb6, Pb4 > spi;

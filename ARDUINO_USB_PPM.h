@@ -12,6 +12,7 @@
 
 class ThrustMasterPPM : public THRUSTMASTER_FCS {
         public:
+        int16_t crude_ppm[CHANNEL_NUMBER];
         uint16_t *ppm_array;
         bool throttle_safety;
         ThrustMasterPPM(uint16_t *ppm, USB *usb );
@@ -47,6 +48,7 @@ enum DisplayStates{
         Display_Last_Channels,
         Display_Joy_Axis,
         Display_Joy_Buttons,
+        Display_Failsafe_Values,
 };
 
 extern uint8_t display_states;

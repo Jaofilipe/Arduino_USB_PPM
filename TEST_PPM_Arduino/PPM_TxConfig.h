@@ -69,7 +69,7 @@
  * 10 - uses Timer1 OC1B output pin
  * other - needs to be handled manually in the code
  */
- #define PPM_PIN (2)
+ #define PPM_PIN (6)
 
 #if defined(PPM_PIN)            //check which Pin was defined for PPM output
   #if (PPM_PIN == 9)            // Pin 9 works best with Timer1 OC1A
@@ -88,7 +88,10 @@
 #endif 
 
 extern uint16_t ppm[CHANNEL_NUMBER];
-extern uint16_t ppm_offset[CHANNEL_NUMBER];
-extern void setup_PPM(void);
+extern uint16_t ppm_offsets[CHANNEL_NUMBER];
+extern uint16_t ppm_failsafe[CHANNEL_NUMBER];
 
+void init_PPM_array(void);
+extern void setup_PPM(void);
+extern void failsafe_PPM(void);
 #endif // _PPM_TX_CONFIG_H_

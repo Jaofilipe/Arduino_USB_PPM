@@ -553,40 +553,6 @@ public:
 
 // "Classic" Arduino pin numbers
 
-#elif defined(__AVR_ATmega328PB__)
-#define P0  Pd0
-#define P1  Pd1
-#define P2  Pd2
-#define P3  Pd3
-#define P4  Pd4
-#define P5  Pd5
-#define P6  Pd6
-#define P7  Pd7
-
-#define P8  Pb0
-#define P9  Pb1
-#define P10  Pb2
-#define P11  Pb3
-#define P12  Pb4
-#define P13  Pb5
-
-#define P14  Pc0
-#define P15  Pc1
-#define P16  Pc2
-#define P17  Pc3
-#define P18  Pc4
-#define P19  Pc5
-
-#define P20  Pb6
-#define P21  Pb7
-
-#define P22  Pc6 // RESET
-
-#define P23  Pe0
-#define P24  Pe1
-#define P25  Pe2 // A6
-#define P26  Pe3 // A7
-
 #elif defined(CORE_TEENSY) && defined(__AVR_ATmega32U4__)
 // Teensy 2.0 pin numbers
 // http://www.pjrc.com/teensy/pinout.html
