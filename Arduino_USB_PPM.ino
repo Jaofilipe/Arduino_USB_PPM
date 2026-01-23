@@ -12,7 +12,7 @@ bool conn_status = true;    //flag to clear lcd on first usb disconnection
 
 void setup() {
 
-  pinMode(6,INPUT_PULLUP); //pin 6 for ok menu button
+  pinMode(MENU_ENTER_PIN, INPUT_PULLUP); //pin for ok menu button
 
   MyLCD.init();
   MyLCD.backlight();
@@ -26,12 +26,10 @@ void setup() {
 #endif
 
 Serial.println(F("\r\nThrustMaster T.16000M FCS Joystick Example Started"));
-//delay(20);
   
   setup_PPM();
 
-  //delay(20);
-  Serial.print(F("\r\n PPM Started \n"));
+  Serial.println(F("\r\n PPM Started \n"));
 
   MyLCD.setCursor(0, 2);
   MyLCD.print("    PPM  Started");
@@ -46,7 +44,7 @@ if (Usb.Init() == -1) {
 
 } else {
 
-  Serial.print(F("\r\n USB Board Init Success"));
+  Serial.println(F("\r\n USB Board Init Success"));
   MyLCD.setCursor(0, 1);
   MyLCD.print("  USB Init Success");
 }
@@ -96,11 +94,8 @@ void handle_display(){
   case Display_Idle:
     printIdle();
     break;
-  case Display_First_Channels:
+  case Display_All_Channels:
     printFirstChannels();
-    break;
-  case Display_Last_Channels:
-    printLastChannels();
     break;
   case Display_Joy_Axis:
     printJoyAxis();
@@ -120,13 +115,22 @@ void handle_display(){
 
 void evaluate_menu(LiquidCrystal_I2C *display){
 
-  uint8_t horizontal = 0;
-  uint8_t vertical = 0;
-  bool button = false;
+  static uint16_t horizontal = 0;
+  static uint16_t vertical = 0;
+  static bool button = false;
 
-  horizontal = analogRead(A0);
-  vertical   = analogRead(A1);
-  button = digitalRead(6);
+  vertical  = analogRead(MENU_VERT_ANALOG)>>2;
+  horizontal   = analogRead(MENU_HORI_ANALOG)>>2;
+  button = digitalRead(MENU_ENTER_PIN);
+
+#if defined(USM_PPM_DEBUG_MENU)
+  Serial.print("Horizontal: ");
+  Serial.print(horizontal);
+  Serial.print("  Vertical: ");
+  Serial.print(vertical);
+  Serial.print("  botao: ");
+  Serial.println(button);
+#endif
 
   union menu_buttons {
     struct{
@@ -141,73 +145,64 @@ void evaluate_menu(LiquidCrystal_I2C *display){
 
 menu_buttons new_menu;
 static menu_buttons old_menu;
-menu_buttons menu_state;
+menu_buttons menu_state_pressed;
 
-new_menu.up =    (vertical >= 255-20) ? 1:0;
-new_menu.down =  (vertical <= (0+20)) ? 1:0;
-new_menu.left =  (horizontal >= 255-20 ) ? 1:0;
-new_menu.right = (horizontal <= (0+20) ) ? 1:0;
+new_menu.up =    (vertical >= 255-10) ? 1:0;
+new_menu.down =  (vertical <= (0+10)) ? 1:0;
+new_menu.left =  (horizontal >= 255-10 ) ? 1:0;
+new_menu.right = (horizontal <= (0+10) ) ? 1:0;
 new_menu.ok = button;
 
-menu_state.menukeys = old_menu.menukeys ^ new_menu.menukeys;
+menu_state_pressed.menukeys = old_menu.menukeys ^ new_menu.menukeys;
 
 old_menu.menukeys = new_menu.menukeys;
 
   switch (display_states)
   {
   case Display_Idle:
-    if (menu_state.up && new_menu.up)
+    if (menu_state_pressed.up && new_menu.up)
     {
-      display_states = Display_First_Channels;
+      display_states = Display_Failsafe_Values;
       display->clear();
-    } else if (menu_state.down && new_menu.down){
-      display_states = Display_Joy_Buttons;
+    } else if (menu_state_pressed.down && new_menu.down){
+      display_states = Display_All_Channels;
       display->clear();
     } else {}
     
     break;
-  case Display_First_Channels:
-    if (menu_state.up && new_menu.up){
-      display_states = Display_Last_Channels;
-      display->clear();
-    } else if (menu_state.down && new_menu.down){
+  case Display_All_Channels:
+    if (menu_state_pressed.up && new_menu.up){
       display_states = Display_Idle;
       display->clear();
-    } else {}
-    break;
-  case Display_Last_Channels:
-    if (menu_state.up && new_menu.up){
+    } else if (menu_state_pressed.down && new_menu.down){
       display_states = Display_Joy_Axis;
-      display->clear();
-    } else if (menu_state.down && new_menu.down){
-      display_states = Display_First_Channels;
       display->clear();
     } else {}
     break;
   case Display_Joy_Axis:
-    if (menu_state.up && new_menu.up){
-      display_states = Display_Joy_Buttons;
+    if (menu_state_pressed.up && new_menu.up){
+      display_states = Display_All_Channels;
       display->clear();
-    } else if (menu_state.down && new_menu.down){
-      display_states = Display_Last_Channels;
+    } else if (menu_state_pressed.down && new_menu.down){
+      display_states = Display_Joy_Buttons;
       display->clear();
     } else {}
     break;
   case Display_Joy_Buttons:
-    if (menu_state.up && new_menu.up){
-      display_states = Display_Failsafe_Values;
-      display->clear();
-    } else if (menu_state.down && new_menu.down){
+    if (menu_state_pressed.up && new_menu.up){
       display_states = Display_Joy_Axis;
+      display->clear();
+    } else if (menu_state_pressed.down && new_menu.down){
+      display_states = Display_Failsafe_Values;
       display->clear();
     } else {}
     break;
   case Display_Failsafe_Values:
-    if (menu_state.up && new_menu.up){
-      display_states = Display_Idle;
-      display->clear();
-    } else if (menu_state.down && new_menu.down){
+    if (menu_state_pressed.up && new_menu.up){
       display_states = Display_Joy_Buttons;
+      display->clear();
+    } else if (menu_state_pressed.down && new_menu.down){
+      display_states = Display_Idle;
       display->clear();
     } else {}
     break;
@@ -310,7 +305,9 @@ void printJoyButtons(){
 }
 
 void printFailsafe(){
-
+    MyLCD.setCursor(10,0);
+    MyLCD.print("Failsafe");
+    MyLCD.setCursor(0,0);
   for (uint8_t i = 0; i < 4; i++){
     MyLCD.setCursor(0,i);
     MyLCD.print(i+1);
@@ -318,17 +315,15 @@ void printFailsafe(){
     MyLCD.print(ppm[i]);
     MyLCD.print(" ");
   }
-  MyLCD.setCursor(0,14);
-  MyLCD.print("Failsafes");
-  for (uint8_t i = 4; i < 7; i++){
-    MyLCD.setCursor(7,i);
+  for (uint8_t i = 4; i < 6; i++){
+    MyLCD.setCursor(7,i-2);
     MyLCD.print(i+1);
     MyLCD.print("-");
     MyLCD.print(ppm[i]);
     MyLCD.print(" ");
   }
-    for (uint8_t i = 7; i < 10; i++){
-    MyLCD.setCursor(14,i);
+  for (uint8_t i = 6; i < 8; i++){
+    MyLCD.setCursor(14,i-4);
     MyLCD.print(i+1);
     MyLCD.print("-");
     MyLCD.print(ppm[i]);

@@ -7,8 +7,13 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-#define USM_PPM_DEBUG_BUTTONS
-#define USM_PPM_DEBUG_AXIS
+//#define USM_PPM_DEBUG_BUTTONS
+//#define USM_PPM_DEBUG_AXIS
+//#define USM_PPM_DEBUG_MENU
+
+#define MENU_VERT_ANALOG A1
+#define MENU_HORI_ANALOG A2
+#define MENU_ENTER_PIN 6
 
 class ThrustMasterPPM : public THRUSTMASTER_FCS {
         public:
@@ -44,8 +49,7 @@ class ThrustMasterPPM : public THRUSTMASTER_FCS {
 
 enum DisplayStates{
         Display_Idle = (uint8_t)0,
-        Display_First_Channels,
-        Display_Last_Channels,
+        Display_All_Channels,
         Display_Joy_Axis,
         Display_Joy_Buttons,
         Display_Failsafe_Values,

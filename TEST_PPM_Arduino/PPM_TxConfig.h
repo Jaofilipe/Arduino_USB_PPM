@@ -45,7 +45,7 @@
 //#define DEFAULT_PPM_TX                        //uncomment this line to use generic TX default ppm values
 
 #if defined(FLYSKY_I6X)
-  #define CHANNEL_NUMBER 10                     //set the number of chanels
+  #define CHANNEL_NUMBER 8                      //set the number of chanels ( 8 is the max amount in ppm trainer)
   #define CHANNEL_DEFAULT_VALUE 1500            //set the default servo value
   #define THROTTLE_DEFAULT_VALUE 1000           //set the default throttle value
   #define PPM_FRAME_LEN 20000                   //set the PPM frame length in microseconds (1ms = 1000µs)
@@ -69,7 +69,7 @@
  * 10 - uses Timer1 OC1B output pin
  * other - needs to be handled manually in the code
  */
- #define PPM_PIN (6)
+ #define PPM_PIN (2)
 
 #if defined(PPM_PIN)            //check which Pin was defined for PPM output
   #if (PPM_PIN == 9)            // Pin 9 works best with Timer1 OC1A

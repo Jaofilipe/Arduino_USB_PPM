@@ -21,7 +21,7 @@ This repository contains:
 
 >[!NOTE]
 >**Requirements:**  
->- Arduino (Uno / Nano / ATmega328P tested)  
+>- Arduino (Uno / Nano) Compatible upload with new arduino nanos with ATmega328PB  
 >- USB Host Shield (see USB Host Shield 2.0)   
 >- USB joystick/gamepad  (ThrustMaster FCS 16000 was used)   
 >- USB Host Shield library: https://github.com/felis/USB_Host_Shield_2.0  (Download and extract zip into lib folder)
