@@ -12,16 +12,27 @@
  * change theese values in your code (usually servo values move between 1000 and 2000)
  */
 uint16_t ppm[CHANNEL_NUMBER];
+uint16_t ppm_failsafe[CHANNEL_NUMBER];
+uint16_t ppm_offsets[CHANNEL_NUMBER];
+
+
+void init_PPM_array(void){
+
+  for(int i = 0; i < CHANNEL_NUMBER; i++){    //initiallize default ppm values
+    if ( i == THROTTLE_AXIS) {            //set default throttle value
+      ppm[i]          = THROTTLE_DEFAULT_VALUE;
+      ppm_failsafe[i] = THROTTLE_DEFAULT_VALUE;
+    } else {
+      ppm[i]          = CHANNEL_DEFAULT_VALUE;      //set default channel value
+      ppm_failsafe[i] = CHANNEL_DEFAULT_VALUE;
+    }
+    ppm_offsets[i] = 0; 
+  }
+}
 
 void setup_PPM(void) {
             
-  for(int i = 0; i < CHANNEL_NUMBER; i++){    //initiallize default ppm values
-    if ( i == THROTTLE_AXIS) {            //set default throttle value
-      ppm[i] = THROTTLE_DEFAULT_VALUE;
-    } else {
-      ppm[i] = CHANNEL_DEFAULT_VALUE;      //set default channel value
-    }
-  }
+  init_PPM_array();
 
   cli();                          // stop interrupts
   TCCR1A = 0;                     // set TCCR1A register to 0
@@ -59,29 +70,36 @@ void setup_PPM(void) {
 
   TCCR1A |= (1 << COM1B0);           // set COM1B0 so that OC1B is Toggled on compare match (for PPM_PIN 10)
   TIMSK1 |= (1 << OCIE1B);        // enable timer 1 interrupt on Output Compare B match
+#elif defined(PPM_MANUAL_USED)
+  OCR1A = 100;                    // Timer 1 compare match register initial value
+  TIMSK1 |= (1 << OCIE1A);        // enable timer 1 interrupt on Output Compare A match
 #endif
- 
+
   pinMode(PPM_PIN, OUTPUT);       // IMPORTANT: When Using OC1A or OC1B outputs port definition MUST come last
 
 #if defined(PPM_MANUAL_USED)                       // for pins other than 9 and 10  which need manual control
   digitalWrite(PPM_PIN, !PPM_PULSE_POLARITY);      // initialize the PPM output pin to idle state
 #endif
-
   sei();                          // re-enable interrupts  
-
 }
+
+void failsafe_PPM(void){
+
+  for(int i = 0; i < CHANNEL_NUMBER; i++){    // failsafe ppm values
+      ppm[i] = ppm_failsafe[i];
+  }
+}
+
 
 /*
 * Timer1 interrupt service routines for COMPA and COMPB
 * This routine generates the PPM signal by toggling the output pin
 */
 
-#if defined(PPM_OC1A_USED)           //Change the source used for Interrupt handling COMPA
+#if defined(PPM_OC1A_USED) || defined(PPM_MANUAL_USED)           //Change the source used for Interrupt handling COMPA
 ISR(TIMER1_COMPA_vect) {      //timer1 interrupt service routine
                       
   static boolean state = true;                //static variable to hold the state
-  
-  //TCNT1 = 0;                    //no need to reset the timer count in CTC mode
   
   if (state) {                                      //start of pulse
 
@@ -119,13 +137,7 @@ ISR(TIMER1_COMPB_vect) {      //timer1 interrupt service routine
                       
   static boolean state = true;                //static variable to hold the state
   
-  //TCNT1 = 0;                    //no need to reset the timer count in CTC mode
-  
-  if (state) {                                      //start of pulse
-
-#if defined(PPM_MANUAL_USED)                        //manually control the PPM output pin                          
-    digitalWrite(PPM_PIN, PPM_PULSE_POLARITY);      //start PPM signal pulse
-#endif    
+  if (state) {                                      //start of pulse  
     
     OCR1B = PPM_PULSE_LEN * 2;                      //set the duration of the pulse
     state = false;                                  //next state will be the end of pulse 
@@ -133,10 +145,6 @@ ISR(TIMER1_COMPB_vect) {      //timer1 interrupt service routine
   }else{                                     //end ppm pulse and calculate when to start the next pulse
     static byte cur_chan_numb;
     static unsigned int calc_rest;
-
-#if defined(PPM_MANUAL_USED)                        //manually control the PPM output pin
-    digitalWrite(PPM_PIN, !PPM_PULSE_POLARITY);     //reset the PPM signal pulse
-#endif
 
     state = true;                                   //next state will be the start of another ppm pulse
 

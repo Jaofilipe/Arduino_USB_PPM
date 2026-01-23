@@ -9,9 +9,15 @@
 
 //#define USM_PPM_DEBUG_BUTTONS
 //#define USM_PPM_DEBUG_AXIS
+//#define USM_PPM_DEBUG_MENU
+
+#define MENU_VERT_ANALOG A1
+#define MENU_HORI_ANALOG A2
+#define MENU_ENTER_PIN 6
 
 class ThrustMasterPPM : public THRUSTMASTER_FCS {
         public:
+        int16_t crude_ppm[CHANNEL_NUMBER];
         uint16_t *ppm_array;
         bool throttle_safety;
         ThrustMasterPPM(uint16_t *ppm, USB *usb );
@@ -22,10 +28,18 @@ class ThrustMasterPPM : public THRUSTMASTER_FCS {
                 void OnButtonUp(uint8_t but_id);
                 void OnButtonDn(uint8_t but_id);
 
-                virtual void handleHatUp(void);
-                virtual void handleHatDown(void);
-                virtual void handleHatLeft(void);
-                virtual void handleHatRight(void);
+                virtual void handleHatUp(void __attribute__((unused))){
+                        return;        
+                };
+                virtual void handleHatDown(void __attribute__((unused))){
+                        return;        
+                };
+                virtual void handleHatLeft(void __attribute__((unused))){
+                        return;        
+                };
+                virtual void handleHatRight(void __attribute__((unused))){
+                        return;        
+                };
 
 };
 
@@ -35,10 +49,10 @@ class ThrustMasterPPM : public THRUSTMASTER_FCS {
 
 enum DisplayStates{
         Display_Idle = (uint8_t)0,
-        Display_First_Channels,
-        Display_Last_Channels,
+        Display_All_Channels,
         Display_Joy_Axis,
         Display_Joy_Buttons,
+        Display_Failsafe_Values,
 };
 
 extern uint8_t display_states;

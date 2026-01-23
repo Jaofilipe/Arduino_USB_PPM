@@ -2,6 +2,18 @@
 Convert a USB joystick input into a PPM signal for a RC transmitter using an Arduino + USB Host Shield.
 Display the current PPM values and Joystick Axis&Button status in a LCD 20×4 display via I2C.
 
+
+<p align="center">
+<img src="/Media/TopViewCase.jpeg" alt="Top View of the case" width="400">  
+<br>  
+<img src="/Media/UsbSideCase.jpeg" alt="Usb side view of the case" height="200">    
+<img src="/Media/PpmOutCase.jpeg" alt="PPM Out side view of the case" height="200">    
+<br>
+Top and side Views of the case
+</p>
+
+
+
 This repository contains:
 - [USB_PPM_Arduino.ino](USB_PPM_Arduino.ino) — main Arduino sketch that bridges USB HID to PPM and shows data on Display
 - [TEST_PPM_Arduino](TEST_PPM_Arduino/TEST_PPM_Arduino.ino) — PPM generation test example and PPM configuration headers
@@ -16,38 +28,46 @@ This repository contains:
 - Example to test PPM Generation (with demo mode that moves a channel)
 - Example to test Joystick HID data reading
 - Shows the current Joystick values as well as the PPM values transmitted on a Display.
+- Allows the setup of failsafe values that will be sent via PPM when USB connection is lost.
+- Throttle safety using USB Joystick button
 
 ## Quick start
 
 >[!NOTE]
 >**Requirements:**  
->- Arduino (Uno / Nano / ATmega328P tested)  
+>- Arduino (Uno / Nano) Compatible upload with new arduino nanos with ATmega328PB  
 >- USB Host Shield (see USB Host Shield 2.0)   
 >- USB joystick/gamepad  (ThrustMaster FCS 16000 was used)   
 >- USB Host Shield library: https://github.com/felis/USB_Host_Shield_2.0  (Download and extract zip into lib folder)
 >- Liquid Display LCD 20x4 with I2C backpack (Can be deemed optional)
 >- LCD I2C Library: https://github.com/johnrickman/LiquidCrystal_I2C  (Download and extract zip into lib folder)
->-
+>- Resistive Analog Joystick for LCD navigation (Optional)
 >- Note: Remove the examples folder for both libraries to avoid platformio errors
 
 ## Wiring:
 
 > [!IMPORTANT]
 > **Before Assembling the Circuit & Uploading**
+>  Analog Joystick is connected as follows:
+>  - Vertical [`MENU_VERT_ANALOG`] Pin A1
+>  - Horizontal [`MENU_HORI_ANALOG`] Pin A2
+>  - Button [`MENU_ENTER_PIN] Digital Pin 6
+>
 > Please verify the pins used for PPM and USB HOST 2.0 Board before uploading!  
 > Timer1 direct output pins are [`Pin 9`] and [`Pin 10`]  
 > These pins are used by the USB HOST 2.0 are [`INT`] ([`Pin 9`]) and [`SS`] ([`Pin 10`])   
-> With this in mind the code uses an alternative Pin for [`PPM_PIN`], [`Pin 7`]
-> With this in mind, there are 2 possible options:  
-> There are 2 possible options:  
+> 
+> There are 2 possible options to use the PPM output,  
+> Either way, first select the desired [`PPM_PIN`] in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h),  
+> Then:         
 > - For usage of [`PPM_PIN`] not directly tied to hardware Timer1 (ok time accuracy):
->   - Change the [`PPM_PIN`] in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h).  
->   - If you did not modify the [USB_PPM_Arduino.ino](USB_PPM_Arduino.ino) code, then the [`Pin 7`] was already selected, no further work needed.
+>   - If you did not modify the [USB_PPM_Arduino.ino](USB_PPM_Arduino.ino) code then double check please.  
 >   
-> - For usage of Direct Timer1 pin (best time accuracy):          
+> - For usage of Direct Timer1 pin (best time accuracy):        
 >   - Change the USB HOST 2.0 pins used for [`SS`] and [`INT`] as needed and route new wires accordingly.  
->   - Read Section 5 of [`USB HOST SHIELD Hardware Manual`](https://chome.nerpa.tech/usb-host-shield-hardware-manual/)  
+>   - Please read Section 5 of [`USB HOST SHIELD Hardware Manual`](https://chome.nerpa.tech/usb-host-shield-hardware-manual/)  
 >   - Variables to be changed are in [`UsbCore.h`] file of [`USB HOST SHIELD 2.0 Repo`](https://github.com/felis/USB_Host_Shield_2.0/blob/master/UsbCore.h)  
+>   - Search for [`typedef MAX3421e<P10, P9> MAX3421E;`] where P4, P3 would be and example alternative to P10, P9
 
 >[!NOTE]
 >- PPM output: Connect the PPM signal to the pin defined as `PPM_PIN` in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h).  
@@ -131,7 +151,13 @@ Image from RcGroups
     - [PPM Generation test example](TEST_PPM_Arduino/TEST_PPM_Arduino.ino)
     - [USB Host read Joystick test example](TEST_USB_Arduino/TEST_USB_Arduino.ino)
     - [Code to generate PPM signals based on Joystick](Arduino_USB_PPM.ino)
+- Select the correct platformio according to used atmega:
+    - For ATMega328p uno or nano, use "uno" or "nano_normal" upload
+    - For ATMega328pb nano (new version from aliexpress) use:
+      - "nano_atmega328pb_serial" to upload when signature of 328pb chip is "atmega328pb" (this uses urclock uploader)
+      - "nano_atmega328pb_arduino" to upload when signature of 328pb chip is "atmega328p" (this forces arduino uploader)
 - Compile and upload the code.
+- Sometimes uploads fail in "Writing" or "Reading" on ATmega328pb clones, please retry to upload (it will write at 3rd or 2nd attempt)
 Open Serial Monitor to view initialization and diagnostic messages.
 - Connect PPM output to your transmitter/receiver input or to an oscilloscope to verify waveforms.
 Usage of I2C display is not mandatory, feel free to remove its code if not needed.

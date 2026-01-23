@@ -8,7 +8,11 @@ LiquidCrystal_I2C MyLCD(0x27, 20, 4);
 
 ThrustMasterPPM_Display TMaster_Joy( ppm, &Usb, &MyLCD);
 
+bool conn_status = true;    //flag to clear lcd on first usb disconnection
+
 void setup() {
+
+  pinMode(MENU_ENTER_PIN, INPUT_PULLUP); //pin for ok menu button
 
   MyLCD.init();
   MyLCD.backlight();
@@ -22,7 +26,13 @@ void setup() {
 #endif
 
 Serial.println(F("\r\nThrustMaster T.16000M FCS Joystick Example Started"));
-delay(200);
+  
+  setup_PPM();
+
+  Serial.println(F("\r\n PPM Started \n"));
+
+  MyLCD.setCursor(0, 2);
+  MyLCD.print("    PPM  Started");
 
 if (Usb.Init() == -1) {
   Serial.print(F("\r\n Check USB Board, Init Failed"));
@@ -34,37 +44,19 @@ if (Usb.Init() == -1) {
 
 } else {
 
-  Serial.print(F("\r\n USB Board Init Success"));
+  Serial.println(F("\r\n USB Board Init Success"));
   MyLCD.setCursor(0, 1);
   MyLCD.print("  USB Init Success");
 }
 
-  setup_PPM();
-
-  delay(200);
-  Serial.print(F("\r\n PPM Started \n"));
-
-  MyLCD.setCursor(0, 2);
-  MyLCD.print("    PPM  Started");
   delay(800);
   MyLCD.clear();
-
-
-/*
-  pinMode(2,INPUT_PULLUP);
-  pinMode(3,INPUT_PULLUP);
-  pinMode(4,INPUT_PULLUP);
-  pinMode(5,INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(2), handleUp, LOW);
-  attachInterrupt(digitalPinToInterrupt(3), handleDown, LOW);
-  attachInterrupt(digitalPinToInterrupt(4), handleOk, LOW);
-  attachInterrupt(digitalPinToInterrupt(5), handleBack, LOW); */
-    
+ 
+  conn_status = true;    //flag to clear lcd on first usb disconnection
 }
 
 void loop() {
 
-  bool conn_status = true;    //flag to clear lcd on first usb disconnection
 label_loop_begin:           //label marker for jump to always retry connecting to usb
   
   Usb.Task();
@@ -76,9 +68,11 @@ label_loop_begin:           //label marker for jump to always retry connecting t
     MyLCD.clear();                                //clear lcd to display conn. lost message
     MyLCD.setCursor(0, 1);
     MyLCD.print("No Conn. to Joystick");
+    failsafe_PPM();                               //set ppm values to failsafe ppm
     conn_status = false;                          //reset usb connection flag
    }
-    goto label_loop_begin;  //bypass remaining code with this jump to the beginning
+   delay(10);
+   goto label_loop_begin;  //bypass remaining code with this jump to the beginning
   
   }else{                            //if usb is now connected 
     if (conn_status == false) {     // and usb connection status was lost 
@@ -88,16 +82,20 @@ label_loop_begin:           //label marker for jump to always retry connecting t
     }
   }
   
-  switch (display_states)
+  evaluate_menu(&MyLCD);
+  handle_display();
+
+}
+
+void handle_display(){
+  
+    switch (display_states)
   {
   case Display_Idle:
     printIdle();
     break;
-  case Display_First_Channels:
+  case Display_All_Channels:
     printFirstChannels();
-    break;
-  case Display_Last_Channels:
-    printLastChannels();
     break;
   case Display_Joy_Axis:
     printJoyAxis();
@@ -105,6 +103,110 @@ label_loop_begin:           //label marker for jump to always retry connecting t
   case Display_Joy_Buttons:
     printJoyButtons();
     break;
+  case Display_Failsafe_Values:
+    printFailsafe();
+    break;
+  
+  default:
+    break;
+  }
+
+}
+
+void evaluate_menu(LiquidCrystal_I2C *display){
+
+  static uint16_t horizontal = 0;
+  static uint16_t vertical = 0;
+  static bool button = false;
+
+  vertical  = analogRead(MENU_VERT_ANALOG)>>2;
+  horizontal   = analogRead(MENU_HORI_ANALOG)>>2;
+  button = digitalRead(MENU_ENTER_PIN);
+
+#if defined(USM_PPM_DEBUG_MENU)
+  Serial.print("Horizontal: ");
+  Serial.print(horizontal);
+  Serial.print("  Vertical: ");
+  Serial.print(vertical);
+  Serial.print("  botao: ");
+  Serial.println(button);
+#endif
+
+  union menu_buttons {
+    struct{
+        uint8_t up : 1;
+        uint8_t down : 1;
+        uint8_t right : 1;
+        uint8_t left : 1;
+        uint8_t ok : 1;
+    } __attribute__((packed));
+    uint8_t menukeys : 5;
+} __attribute__((packed));
+
+menu_buttons new_menu;
+static menu_buttons old_menu;
+menu_buttons menu_state_pressed;
+
+new_menu.up =    (vertical >= 255-10) ? 1:0;
+new_menu.down =  (vertical <= (0+10)) ? 1:0;
+new_menu.left =  (horizontal >= 255-10 ) ? 1:0;
+new_menu.right = (horizontal <= (0+10) ) ? 1:0;
+new_menu.ok = button;
+
+menu_state_pressed.menukeys = old_menu.menukeys ^ new_menu.menukeys;
+
+old_menu.menukeys = new_menu.menukeys;
+
+  switch (display_states)
+  {
+  case Display_Idle:
+    if (menu_state_pressed.up && new_menu.up)
+    {
+      display_states = Display_Failsafe_Values;
+      display->clear();
+    } else if (menu_state_pressed.down && new_menu.down){
+      display_states = Display_All_Channels;
+      display->clear();
+    } else {}
+    
+    break;
+  case Display_All_Channels:
+    if (menu_state_pressed.up && new_menu.up){
+      display_states = Display_Idle;
+      display->clear();
+    } else if (menu_state_pressed.down && new_menu.down){
+      display_states = Display_Joy_Axis;
+      display->clear();
+    } else {}
+    break;
+  case Display_Joy_Axis:
+    if (menu_state_pressed.up && new_menu.up){
+      display_states = Display_All_Channels;
+      display->clear();
+    } else if (menu_state_pressed.down && new_menu.down){
+      display_states = Display_Joy_Buttons;
+      display->clear();
+    } else {}
+    break;
+  case Display_Joy_Buttons:
+    if (menu_state_pressed.up && new_menu.up){
+      display_states = Display_Joy_Axis;
+      display->clear();
+    } else if (menu_state_pressed.down && new_menu.down){
+      display_states = Display_Failsafe_Values;
+      display->clear();
+    } else {}
+    break;
+  case Display_Failsafe_Values:
+    if (menu_state_pressed.up && new_menu.up){
+      display_states = Display_Joy_Buttons;
+      display->clear();
+    } else if (menu_state_pressed.down && new_menu.down){
+      display_states = Display_Idle;
+      display->clear();
+    } else {}
+    break;
+  
   
   default:
     break;
@@ -192,13 +294,39 @@ void printJoyAxis(){
 void printJoyButtons(){
   char buffer[3];   // 2 digits + null terminator
 
-for (uint8_t i = 0; i < 16; i++)
-{
-    MyLCD.setCursor(((i>>2)*5), i%4); // 5 char spacing by using most sig. bit and n columns by i%4 
-    sprintf(buffer, "%02d",(i+1));
-    MyLCD.print(buffer);
-    MyLCD.print("-");
-    MyLCD.print(((TMaster_Joy.TmJoyData.Buttons.all_buttons>>i) & 1u));
+  for (uint8_t i = 0; i < 16; i++)
+  {
+      MyLCD.setCursor(((i>>2)*5), i%4); // 5 char spacing by using most sig. bit and n columns by i%4 
+      sprintf(buffer, "%02d",(i+1));
+      MyLCD.print(buffer);
+      MyLCD.print("-");
+      MyLCD.print(((TMaster_Joy.TmJoyData.Buttons.all_buttons>>i) & 1u));
+  }
 }
 
+void printFailsafe(){
+    MyLCD.setCursor(10,0);
+    MyLCD.print("Failsafe");
+    MyLCD.setCursor(0,0);
+  for (uint8_t i = 0; i < 4; i++){
+    MyLCD.setCursor(0,i);
+    MyLCD.print(i+1);
+    MyLCD.print("-");
+    MyLCD.print(ppm[i]);
+    MyLCD.print(" ");
+  }
+  for (uint8_t i = 4; i < 6; i++){
+    MyLCD.setCursor(7,i-2);
+    MyLCD.print(i+1);
+    MyLCD.print("-");
+    MyLCD.print(ppm[i]);
+    MyLCD.print(" ");
+  }
+  for (uint8_t i = 6; i < 8; i++){
+    MyLCD.setCursor(14,i-4);
+    MyLCD.print(i+1);
+    MyLCD.print("-");
+    MyLCD.print(ppm[i]);
+    MyLCD.print(" ");
+  }
 }

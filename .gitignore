@@ -12,7 +12,7 @@
 .vscode
 .pio/*
 .pio
-/lib/*
+#/lib/*
 
 !.gitkeep 
 

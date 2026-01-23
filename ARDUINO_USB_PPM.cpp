@@ -6,14 +6,30 @@ uint8_t display_states = Display_Idle;
 ThrustMasterPPM::ThrustMasterPPM(uint16_t *ppm, USB *usb ) : THRUSTMASTER_FCS(usb) , ppm_array(ppm),  throttle_safety(true){
 
         //do something when initializing
+  for(int i = 0; i < CHANNEL_NUMBER; i++){    
+    if ( i == THROTTLE_AXIS) {            
+      crude_ppm[i] = THROTTLE_DEFAULT_VALUE;
+    } else {
+      crude_ppm[i] = CHANNEL_DEFAULT_VALUE;      
+    }
+  }
 };
 
 void ThrustMasterPPM::OnGamePadChanged(const TMAxisData *axis){
 
-        ppm_array[YAW_AXIS]      = map(axis->RZaxis,0x00,0xFF,1000,2000); 
-        ppm_array[ROLL_AXIS]     = map(axis->Xaxis ,0x00,0x3FFF,1000,2000);
-        ppm_array[THROTTLE_AXIS] = ((!throttle_safety) ? (map(axis->Slider,0x00,0xFF,1000,2000)):(1000));
-        ppm_array[PITCH_AXIS]    = map(axis->Yaxis ,0x00,0x3FFF,1000,2000); 
+        crude_ppm[YAW_AXIS]      = map(axis->RZaxis,0x00,0xFF,1000,2000); 
+        crude_ppm[ROLL_AXIS]     = map(axis->Xaxis ,0x00,0x3FFF,1000,2000);
+        crude_ppm[THROTTLE_AXIS] = map(axis->Slider,0x00,0xFF,1000,2000);
+        crude_ppm[PITCH_AXIS]    = map(axis->Yaxis ,0x00,0x3FFF,1000,2000); 
+
+        //apply offsets to crude ppm
+        for (uint8_t i = 0; i < CHANNEL_NUMBER; i++){       
+          if (i == THROTTLE_AXIS){
+                ppm_array[i] = (!throttle_safety) ? ((ppm_offsets[i] > 0) ? min(crude_ppm[i]+ppm_offsets[i],2000) : max(crude_ppm[i]+ppm_offsets[i],1000)): (THROTTLE_DEFAULT_VALUE);
+          } else{
+                ppm_array[i] = (ppm_offsets[i] > 0) ? min(crude_ppm[i]+ppm_offsets[i],2000) : max(crude_ppm[i]+ppm_offsets[i],1000);     
+          }
+        }
 
 #if defined(USM_PPM_DEBUG_AXIS)
         Serial.print(F("X Axis: "));
@@ -314,18 +330,15 @@ ThrustMasterPPM_Display::ThrustMasterPPM_Display(uint16_t *ppm, USB *usb, Liquid
 };
 
 void ThrustMasterPPM_Display::handleHatUp(void){
-  display_states = (display_states <= 0 )?(Display_Max_State):(display_states-1);
-  Lcd_I2C->clear();
+
 }
 
 void ThrustMasterPPM_Display::handleHatDown(void){
-  display_states = (display_states >= Display_Max_State )?(0):(display_states+1);
-  Lcd_I2C->clear();
+
 }
 
 void ThrustMasterPPM_Display::handleHatLeft(void){
-  display_states = Display_Idle;
-  Lcd_I2C->clear(); 
+
 }
 
 void ThrustMasterPPM_Display::handleHatRight(void){
