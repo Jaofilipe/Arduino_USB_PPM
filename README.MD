@@ -2,6 +2,17 @@
 Convert a USB joystick input into a PPM signal for a RC transmitter using an Arduino + USB Host Shield.
 Display the current PPM values and Joystick Axis&Button status in a LCD 20×4 display via I2C.
 
+
+<p align="center">
+<img src="/Media/TopViewCase.jpeg" alt="Top View of the case" width="300">    
+<img src="/Media/UsbSideCase.jpeg" alt="Usb side view of the case" width="300">    
+<img src="/Media/PpmOutCase.jpeg" alt="PPM Out side view of the case" width="300">    
+<br>
+Top and side Views of the case
+</p>
+
+
+
 This repository contains:
 - [USB_PPM_Arduino.ino](USB_PPM_Arduino.ino) — main Arduino sketch that bridges USB HID to PPM and shows data on Display
 - [TEST_PPM_Arduino](TEST_PPM_Arduino/TEST_PPM_Arduino.ino) — PPM generation test example and PPM configuration headers
@@ -145,6 +156,7 @@ Image from RcGroups
       - "nano_atmega328pb_serial" to upload when signature of 328pb chip is "atmega328pb" (this uses urclock uploader)
       - "nano_atmega328pb_arduino" to upload when signature of 328pb chip is "atmega328p" (this forces arduino uploader)
 - Compile and upload the code.
+- Sometimes uploads fail in "Writing" or "Reading" on ATmega328pb clones, please retry to upload (it will write at 3rd or 2nd attempt)
 Open Serial Monitor to view initialization and diagnostic messages.
 - Connect PPM output to your transmitter/receiver input or to an oscilloscope to verify waveforms.
 Usage of I2C display is not mandatory, feel free to remove its code if not needed.
