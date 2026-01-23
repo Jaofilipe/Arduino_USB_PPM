@@ -139,6 +139,11 @@ Image from RcGroups
     - [PPM Generation test example](TEST_PPM_Arduino/TEST_PPM_Arduino.ino)
     - [USB Host read Joystick test example](TEST_USB_Arduino/TEST_USB_Arduino.ino)
     - [Code to generate PPM signals based on Joystick](Arduino_USB_PPM.ino)
+- Select the correct platformio according to used atmega:
+    - For ATMega328p uno or nano, use "uno" or "nano_normal" upload
+    - For ATMega328pb nano (new version from aliexpress) use:
+      - "nano_atmega328pb_serial" to upload when signature of 328pb chip is "atmega328pb" (this uses urclock uploader)
+      - "nano_atmega328pb_arduino" to upload when signature of 328pb chip is "atmega328p" (this forces arduino uploader)
 - Compile and upload the code.
 Open Serial Monitor to view initialization and diagnostic messages.
 - Connect PPM output to your transmitter/receiver input or to an oscilloscope to verify waveforms.
