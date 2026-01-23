@@ -16,6 +16,8 @@ This repository contains:
 - Example to test PPM Generation (with demo mode that moves a channel)
 - Example to test Joystick HID data reading
 - Shows the current Joystick values as well as the PPM values transmitted on a Display.
+- Allows the setup of failsafe values that will be sent via PPM when USB connection is lost.
+- Throttle safety using USB Joystick button
 
 ## Quick start
 
@@ -27,27 +29,33 @@ This repository contains:
 >- USB Host Shield library: https://github.com/felis/USB_Host_Shield_2.0  (Download and extract zip into lib folder)
 >- Liquid Display LCD 20x4 with I2C backpack (Can be deemed optional)
 >- LCD I2C Library: https://github.com/johnrickman/LiquidCrystal_I2C  (Download and extract zip into lib folder)
->-
+>- Resistive Analog Joystick for LCD navigation (Optional)
 >- Note: Remove the examples folder for both libraries to avoid platformio errors
 
 ## Wiring:
 
 > [!IMPORTANT]
 > **Before Assembling the Circuit & Uploading**
+>  Analog Joystick is connected as follows:
+>  - Vertical [`MENU_VERT_ANALOG`] Pin A1
+>  - Horizontal [`MENU_HORI_ANALOG`] Pin A2
+>  - Button [`MENU_ENTER_PIN] Digital Pin 6
+>
 > Please verify the pins used for PPM and USB HOST 2.0 Board before uploading!  
 > Timer1 direct output pins are [`Pin 9`] and [`Pin 10`]  
 > These pins are used by the USB HOST 2.0 are [`INT`] ([`Pin 9`]) and [`SS`] ([`Pin 10`])   
-> With this in mind the code uses an alternative Pin for [`PPM_PIN`], [`Pin 7`]
-> With this in mind, there are 2 possible options:  
-> There are 2 possible options:  
+> 
+> There are 2 possible options to use the PPM output,  
+> Either way, first select the desired [`PPM_PIN`] in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h),  
+> Then:         
 > - For usage of [`PPM_PIN`] not directly tied to hardware Timer1 (ok time accuracy):
->   - Change the [`PPM_PIN`] in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h).  
->   - If you did not modify the [USB_PPM_Arduino.ino](USB_PPM_Arduino.ino) code, then the [`Pin 7`] was already selected, no further work needed.
+>   - If you did not modify the [USB_PPM_Arduino.ino](USB_PPM_Arduino.ino) code then double check please.  
 >   
-> - For usage of Direct Timer1 pin (best time accuracy):          
+> - For usage of Direct Timer1 pin (best time accuracy):        
 >   - Change the USB HOST 2.0 pins used for [`SS`] and [`INT`] as needed and route new wires accordingly.  
->   - Read Section 5 of [`USB HOST SHIELD Hardware Manual`](https://chome.nerpa.tech/usb-host-shield-hardware-manual/)  
+>   - Please read Section 5 of [`USB HOST SHIELD Hardware Manual`](https://chome.nerpa.tech/usb-host-shield-hardware-manual/)  
 >   - Variables to be changed are in [`UsbCore.h`] file of [`USB HOST SHIELD 2.0 Repo`](https://github.com/felis/USB_Host_Shield_2.0/blob/master/UsbCore.h)  
+>   - Search for [`typedef MAX3421e<P10, P9> MAX3421E;`] where P4, P3 would be and example alternative to P10, P9
 
 >[!NOTE]
 >- PPM output: Connect the PPM signal to the pin defined as `PPM_PIN` in the header file [`PPM_TxConfig.h`](TEST_PPM_Arduino/PPM_TxConfig.h).  
