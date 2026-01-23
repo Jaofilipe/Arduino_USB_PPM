@@ -4,9 +4,10 @@ Display the current PPM values and Joystick Axis&Button status in a LCD 20×4 di
 
 
 <p align="center">
-<img src="/Media/TopViewCase.jpeg" alt="Top View of the case" width="300">    
-<img src="/Media/UsbSideCase.jpeg" alt="Usb side view of the case" width="300">    
-<img src="/Media/PpmOutCase.jpeg" alt="PPM Out side view of the case" width="300">    
+<img src="/Media/TopViewCase.jpeg" alt="Top View of the case" width="400">  
+<br>  
+<img src="/Media/UsbSideCase.jpeg" alt="Usb side view of the case" height="200">    
+<img src="/Media/PpmOutCase.jpeg" alt="PPM Out side view of the case" height="200">    
 <br>
 Top and side Views of the case
 </p>
